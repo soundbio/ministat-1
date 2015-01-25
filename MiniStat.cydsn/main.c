@@ -34,7 +34,6 @@ int main()
     uint8 reboot_count =0;
     uint32 photo_bg = 0, photo_fg = 0;
     uint32 led_volt_bg = 0, led_volt_fg = 0;
-    uint32 led_sense_bg = 0, led_sense_fg = 0;
 
     for(;;)
     {
@@ -44,28 +43,25 @@ int main()
             if (detector_phase == LED_on) {
                 detector_phase = collect_on;
             } else if (detector_phase == collect_on) {
-                photo_fg = adc_result[0]; // photodiode signal
-                led_sense_fg = adc_result[1]; // LED current
-                led_volt_fg = adc_result[2]; // LED anode voltage (ref to gnd)
+                photo_fg = adc_result[adc_chan_photosensor]; // photodiode signal
+                led_volt_fg = adc_result[adc_chan_led_voltage]; // LED anode voltage (ref to gnd)
                 LED_driver_Stop();
                 detector_phase = LED_off;
             } else if (detector_phase == LED_off) {
                 detector_phase = collect_off;
             } else {
-                photo_bg = adc_result[0];
-                led_sense_bg = adc_result[1];
-                led_volt_bg = adc_result[2];
+                photo_bg = adc_result[adc_chan_photosensor];
+                led_volt_bg = adc_result[adc_chan_led_voltage];
                 LED_driver_Enable();
                 detector_phase = LED_on;
             }
         }
-        // periodically report results
+        // periodically report results to Cypress Bridge Control Panel (RX8)
         if ((int32)(millis()-next_report_time) >= 0) {
             next_report_time += report_interval_ms;
             // take (foreground - background)
             uint8* byteptr;
             uint32 photoval = photo_fg - photo_bg;
-            uint32 ledsenseval = led_sense_fg - led_sense_bg;
             uint32 ledvoltval = led_volt_fg - led_volt_bg;
             // apply LED thermal drift correction
             float delta_ledvolt = (int32)(ledvoltval - NOM_LEDVOLT)/(NOM_LEDVOLT - OFFSET_LEDVOLT);
@@ -76,7 +72,7 @@ int main()
             int32 count = isnprintf(buf, 30, "0x%x R%c%c%c%c", photoval,
               *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
-            byteptr = (uint8*)(&ledsenseval);
+            byteptr = (uint8*)(&(adc_result[adc_chan_pump_sensor]));
             count = isnprintf(buf, 30, "S%c%c%c%c", 
               *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
@@ -85,8 +81,12 @@ int main()
               *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
             byteptr = (uint8*)(&adjusted_photoval);
-            count = isnprintf(buf, 30, "J%c%c%c%c\r\n", 
+            count = isnprintf(buf, 30, "J%c%c%c%c", 
               *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
+            Host_UART_SpiUartPutArray((uint8*)buf, count);
+            byteptr = (uint8*)(&adc_pump_state.count);
+            count = isnprintf(buf, 30, "P%c%c\r\n", 
+              *byteptr, *(byteptr+1)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
         }
             
