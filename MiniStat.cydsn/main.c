@@ -10,6 +10,11 @@
 #include "isnprintf.h"
 #include "ADC_proc.h"
 
+// LED thermal drift correction
+#define NOM_LEDVOLT 2970000L
+#define OFFSET_LEDVOLT (1./3. * 32768 * 100) // LED cathode is at Vref
+#define LED_CORR_FACTOR (6.2)  // % change in light per 1% change in LED voltage
+
 enum { LED_on, collect_on, LED_off, collect_off } detector_phase = LED_on;
 
 int main()
@@ -67,6 +72,11 @@ int main()
             uint32 ledvoltval = led_volt_fg - led_volt_bg;
             uint32 ledvoltval_bytes[4] = { (ledvoltval & 0xff000000) >> 24, (ledvoltval & 0x00ff0000) >> 16,
                                          (ledvoltval & 0x0000ff00) >> 8, ledvoltval & 0x000000ff };
+            // apply LED thermal drift correction
+            float delta_ledvolt = (int32)(ledvoltval - NOM_LEDVOLT)/(NOM_LEDVOLT - OFFSET_LEDVOLT);
+            uint32 adjusted_photoval = photoval / (1.0 + delta_ledvolt*LED_CORR_FACTOR);
+            uint32 adjusted_photoval_bytes[4] = { (adjusted_photoval & 0xff000000) >> 24, (adjusted_photoval & 0x00ff0000) >> 16,
+                                         (adjusted_photoval & 0x0000ff00) >> 8, adjusted_photoval & 0x000000ff };
             // output values on serial port; hex then binary
             char buf[30];
             int32 count = isnprintf(buf, 30, "0x%x R%c%c%c%c", photoval,
@@ -75,8 +85,11 @@ int main()
             count = isnprintf(buf, 30, "S%c%c%c%c", 
               ledsenseval_bytes[0], ledsenseval_bytes[1], ledsenseval_bytes[2], ledsenseval_bytes[3]);
             Host_UART_SpiUartPutArray((uint8*)buf, count);
-            count = isnprintf(buf, 30, "V%c%c%c%c\r\n", 
+            count = isnprintf(buf, 30, "V%c%c%c%c", 
               ledvoltval_bytes[0], ledvoltval_bytes[1], ledvoltval_bytes[2], ledvoltval_bytes[3]);
+            Host_UART_SpiUartPutArray((uint8*)buf, count);
+            count = isnprintf(buf, 30, "J%c%c%c%c\r\n", 
+              adjusted_photoval_bytes[0], adjusted_photoval_bytes[1], adjusted_photoval_bytes[2], adjusted_photoval_bytes[3]);
             Host_UART_SpiUartPutArray((uint8*)buf, count);
         }
             
@@ -85,7 +98,7 @@ int main()
             if(Button_Read()) {
                 reboot_count = 0;
             } else {
-                if(++reboot_count > 2) {
+                if(++reboot_count > 1) {
                     Bootloadable_Load();
                 }
             }
