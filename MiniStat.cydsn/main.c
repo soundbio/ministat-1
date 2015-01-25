@@ -62,34 +62,31 @@ int main()
         // periodically report results
         if ((int32)(millis()-next_report_time) >= 0) {
             next_report_time += report_interval_ms;
-            // take (foreground - background); split to 4 bytes for output
+            // take (foreground - background)
+            uint8* byteptr;
             uint32 photoval = photo_fg - photo_bg;
-            uint32 photoval_bytes[4] = { (photoval & 0xff000000) >> 24, (photoval & 0x00ff0000) >> 16,
-                                         (photoval & 0x0000ff00) >> 8, photoval & 0x000000ff };
             uint32 ledsenseval = led_sense_fg - led_sense_bg;
-            uint32 ledsenseval_bytes[4] = { (ledsenseval & 0xff000000) >> 24, (ledsenseval & 0x00ff0000) >> 16,
-                                         (ledsenseval & 0x0000ff00) >> 8, ledsenseval & 0x000000ff };
             uint32 ledvoltval = led_volt_fg - led_volt_bg;
-            uint32 ledvoltval_bytes[4] = { (ledvoltval & 0xff000000) >> 24, (ledvoltval & 0x00ff0000) >> 16,
-                                         (ledvoltval & 0x0000ff00) >> 8, ledvoltval & 0x000000ff };
             // apply LED thermal drift correction
             float delta_ledvolt = (int32)(ledvoltval - NOM_LEDVOLT)/(NOM_LEDVOLT - OFFSET_LEDVOLT);
             uint32 adjusted_photoval = photoval / (1.0 + delta_ledvolt*LED_CORR_FACTOR);
-            uint32 adjusted_photoval_bytes[4] = { (adjusted_photoval & 0xff000000) >> 24, (adjusted_photoval & 0x00ff0000) >> 16,
-                                         (adjusted_photoval & 0x0000ff00) >> 8, adjusted_photoval & 0x000000ff };
             // output values on serial port; hex then binary
             char buf[30];
+            byteptr = (uint8*)(&photoval);
             int32 count = isnprintf(buf, 30, "0x%x R%c%c%c%c", photoval,
-              photoval_bytes[0], photoval_bytes[1], photoval_bytes[2], photoval_bytes[3]);
+              *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
+            byteptr = (uint8*)(&ledsenseval);
             count = isnprintf(buf, 30, "S%c%c%c%c", 
-              ledsenseval_bytes[0], ledsenseval_bytes[1], ledsenseval_bytes[2], ledsenseval_bytes[3]);
+              *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
+            byteptr = (uint8*)(&ledvoltval);
             count = isnprintf(buf, 30, "V%c%c%c%c", 
-              ledvoltval_bytes[0], ledvoltval_bytes[1], ledvoltval_bytes[2], ledvoltval_bytes[3]);
+              *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
+            byteptr = (uint8*)(&adjusted_photoval);
             count = isnprintf(buf, 30, "J%c%c%c%c\r\n", 
-              adjusted_photoval_bytes[0], adjusted_photoval_bytes[1], adjusted_photoval_bytes[2], adjusted_photoval_bytes[3]);
+              *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
         }
             
