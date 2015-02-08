@@ -25,17 +25,19 @@ int main()
     LED_driver_Start(); // LED driver op amp
     adc_setup(); // A to D converter
     STIR_PWM_Start();
+    PUMP_PWM_Start();
     CyGlobalIntEnable; // Enable interrupts
     
     uint32 report_interval_ms = 100;
     uint32 next_report_time = millis() + report_interval_ms;
+    uint32 RX8_reports_remaining = 0;
     uint32 toggle_interval_ms = 20;
     uint32 next_toggle_time = millis() + toggle_interval_ms;
     uint32 reboot_timer = millis();
     uint8 reboot_count =0;
     uint32 photo_bg = 0, photo_fg = 0;
     uint32 led_volt_bg = 0, led_volt_fg = 0;
-    uint8 talkRX8 = 1;
+    uint16 pump_run_pwm = 0;
     int32 input_param = 0;
 
     for(;;)
@@ -60,8 +62,9 @@ int main()
             }
         }
         // periodically report results to Cypress Bridge Control Panel (RX8)
-        if (talkRX8 && (int32)(millis()-next_report_time) >= 0) {
+        if (RX8_reports_remaining > 0 && (int32)(millis()-next_report_time) >= 0) {
             next_report_time += report_interval_ms;
+            RX8_reports_remaining -= 1;
             // take (foreground - background)
             uint8* byteptr;
             uint32 photoval = photo_fg - photo_bg;
@@ -92,26 +95,53 @@ int main()
               *byteptr, *(byteptr+1)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
         }
-
-        // watch for serial input and dispatch
+        P1_6_Write(RX8_reports_remaining>0); // Blue LED on in RX8 mode
+        
+        // watch for serial input
+        // simple serial command protocol, single-letter commands:
+        //    [<numeric parameter>]<command letter>
+        // e.g. '150s' sets stir speed to 150
+        //
         if (Host_UART_SpiUartGetRxBufferSize() != 0) {
             char in_char = (char)(Host_UART_SpiUartReadRxData() & 0xFF);
-            // dispatch
-            switch (in_char) {
-                case 'R':
-                    // toggle RX8 (Blue LED = no RX8)
-                    talkRX8 = !talkRX8;
-                    P1_6_Write(~talkRX8);
-                    break;
-                case 'P':
-                    // Pump on/off
-                    PumpDrive_Write(~PumpDrive_Read());
-                    break;
-                case 'S':
-                    // Stir motor bump up PWM value
-                    STIR_PWM_WriteCompare((STIR_PWM_ReadCompare()+0x40)&0x3FF);
-                default:
-                    break;
+            if(RX8_reports_remaining==0) { // echo
+                Host_UART_UartPutChar(in_char); // echo
+                if (in_char=='\r') {
+                    Host_UART_UartPutChar('\n');
+                }
+            }
+            if (in_char>='0' && in_char<='9') {
+                // collect a numerical parameter value
+                input_param = input_param*10 + (in_char-'0');
+            } else {
+                // dispatch
+                switch (in_char) {
+                    case 'R':
+                        // toggle RX8 (Blue LED = talking RX8)
+                        RX8_reports_remaining = input_param;
+                        if (RX8_reports_remaining > 0) {
+                            next_report_time = millis()+10000; // 10 sec startup delay
+                        }
+                        break;
+                    case 'P':
+                        // Pump on/off
+                        if(PUMP_PWM_ReadCompare()) {
+                            PUMP_PWM_WriteCompare(0);
+                        } else {
+                            PUMP_PWM_WriteCompare(pump_run_pwm);
+                        }
+                        break;
+                    case 'p':
+                        // Set pump running pwm level
+                        pump_run_pwm = input_param & 0x3FF;
+                        break;
+                    case 's':
+                        // Set stir motor pwm level
+                        STIR_PWM_WriteCompare(input_param & 0x3FF);
+                    default:
+                        break;
+                }
+                input_param = 0;
             }
         }
         // clear serial RX error flags if any
@@ -119,11 +149,14 @@ int main()
             Host_UART_ClearRxInterruptSource(Host_UART_INTR_RX_ERR);
         }
 
-        // watch for pushbutton held down 1-2 sec (reboot request)
+        // watch for pushbutton
+        //   Stop RX8 transmission
+        //   Held down 1-2 sec = reboot request
         if ((int32)(millis()-reboot_timer) >= 0) {
             if(Button_Read()) {
                 reboot_count = 0;
             } else {
+                RX8_reports_remaining = 0;
                 if(++reboot_count > 1) {
                     Bootloadable_Load();
                 }
