@@ -24,6 +24,7 @@ int main()
     Transimpedance_Start(); // photodiode op amp
     LED_driver_Start(); // LED driver op amp
     adc_setup(); // A to D converter
+    STIR_PWM_Start();
     CyGlobalIntEnable; // Enable interrupts
     
     uint32 report_interval_ms = 100;
@@ -34,6 +35,8 @@ int main()
     uint8 reboot_count =0;
     uint32 photo_bg = 0, photo_fg = 0;
     uint32 led_volt_bg = 0, led_volt_fg = 0;
+    uint8 talkRX8 = 1;
+    int32 input_param = 0;
 
     for(;;)
     {
@@ -57,7 +60,7 @@ int main()
             }
         }
         // periodically report results to Cypress Bridge Control Panel (RX8)
-        if ((int32)(millis()-next_report_time) >= 0) {
+        if (talkRX8 && (int32)(millis()-next_report_time) >= 0) {
             next_report_time += report_interval_ms;
             // take (foreground - background)
             uint8* byteptr;
@@ -89,7 +92,33 @@ int main()
               *byteptr, *(byteptr+1)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
         }
-            
+
+        // watch for serial input and dispatch
+        if (Host_UART_SpiUartGetRxBufferSize() != 0) {
+            char in_char = (char)(Host_UART_SpiUartReadRxData() & 0xFF);
+            // dispatch
+            switch (in_char) {
+                case 'R':
+                    // toggle RX8 (Blue LED = no RX8)
+                    talkRX8 = !talkRX8;
+                    P1_6_Write(~talkRX8);
+                    break;
+                case 'P':
+                    // Pump on/off
+                    PumpDrive_Write(~PumpDrive_Read());
+                    break;
+                case 'S':
+                    // Stir motor bump up PWM value
+                    STIR_PWM_WriteCompare((STIR_PWM_ReadCompare()+0x40)&0x3FF);
+                default:
+                    break;
+            }
+        }
+        // clear serial RX error flags if any
+        if (Host_UART_CHECK_INTR_RX(Host_UART_INTR_RX_ERR)) {
+            Host_UART_ClearRxInterruptSource(Host_UART_INTR_RX_ERR);
+        }
+
         // watch for pushbutton held down 1-2 sec (reboot request)
         if ((int32)(millis()-reboot_timer) >= 0) {
             if(Button_Read()) {
