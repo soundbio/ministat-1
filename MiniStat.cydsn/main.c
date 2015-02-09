@@ -38,6 +38,7 @@ int main()
     uint32 photo_bg = 0, photo_fg = 0;
     uint32 led_volt_bg = 0, led_volt_fg = 0;
     uint16 pump_run_pwm = 0;
+    uint16 pump_steps_target = 0;
     int32 input_param = 0;
 
     for(;;)
@@ -97,6 +98,10 @@ int main()
         }
         P1_6_Write(RX8_reports_remaining>0); // Blue LED on in RX8 mode
         
+        if((int16)(adc_pump_state.count-pump_steps_target)>=0) {
+            PUMP_PWM_WriteCompare(0);
+        }
+        
         // watch for serial input
         // simple serial command protocol, single-letter commands:
         //    [<numeric parameter>]<command letter>
@@ -124,12 +129,9 @@ int main()
                         }
                         break;
                     case 'P':
-                        // Pump on/off
-                        if(PUMP_PWM_ReadCompare()) {
-                            PUMP_PWM_WriteCompare(0);
-                        } else {
-                            PUMP_PWM_WriteCompare(pump_run_pwm);
-                        }
+                        // run pump for n steps (6 steps per rev)
+                        pump_steps_target = adc_pump_state.count + input_param;
+                        PUMP_PWM_WriteCompare(pump_run_pwm);
                         break;
                     case 'p':
                         // Set pump running pwm level

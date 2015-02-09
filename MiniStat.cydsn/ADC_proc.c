@@ -60,8 +60,8 @@ CY_ISR(ADC_ISR_LOC)
 
 void adc_setup() {
     // initialize pump sensor state
-    const int16 kThresh = 24000;
-    const int16 kHyst = kThresh/8;
+    const int16 kThresh = 25000;
+    const int16 kHyst = kThresh/5;
     adc_pump_state.thresh = kThresh;
     adc_pump_state.hyst = kHyst;
     adc_pump_state.count = 0;
