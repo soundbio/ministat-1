@@ -1,5 +1,5 @@
 /* ========================================
-/* 
+ * 
  * Host Uart for HiveBio Ministat
  * 
  * Copyright C. Harrison

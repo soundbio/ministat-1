@@ -18,12 +18,12 @@ uint32_t next_time;
 void setup()
 {
   nh.advertise(chatter);
-  next_time = SysTimer::millis();
+  next_time = millis();
 }
 
 void loop()
 {
-  if ((int32_t)(SysTimer::millis()-next_time)>0) {
+  if ((int32_t)(millis()-next_time)>0) {
     next_time += 1000; // delay 1 sec
     str_msg.data = hello;
     chatter.publish( &str_msg );

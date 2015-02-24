@@ -9,7 +9,7 @@
 #ifndef SYSTIMER_H
 #define SYSTIMER_H
     
-uint32 millis();    
+uint32_t millis();    
 void systimer_setup();
 
 #endif
