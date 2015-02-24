@@ -85,7 +85,7 @@ class Psoc4Hardware {
     }
 
 
-    unsigned long time() {return SysTimer::millis();}
+    unsigned long time() {return millis();}
 
   protected:
     HardwareSerial* iostream;

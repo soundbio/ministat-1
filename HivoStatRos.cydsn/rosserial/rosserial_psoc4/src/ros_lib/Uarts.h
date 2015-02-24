@@ -1,16 +1,10 @@
 /* ========================================
- *
- * The following firmware was developed by Chuck Harrison
- * This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+/* 
+ * Host Uart for HiveBio Ministat
  * 
- * http://creativecommons.org/licenses/by/3.0/deed.en_US
- * 
- * You are free to:
- * -To Share — to copy, distribute and transmit the work 
- * -To Remix — to adapt the work 
- * -To make commercial use of the work
+ * Copyright C. Harrison
+ * BSD 2-clause license http://opensource.org/licenses/BSD-2-Clause
  *
- * ========================================
  */
 
 #ifndef ROS_UARTS_H_
