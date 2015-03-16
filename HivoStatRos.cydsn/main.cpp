@@ -13,6 +13,7 @@ extern "C" {
 #include "isnprintf.h"
 #include "std_msgs/Int32.h"
 #include "std_msgs/UInt16.h"
+#include "std_msgs/Float32.h"
 
 
 #include <ros.h>
@@ -22,16 +23,15 @@ extern void init(void);
 
 ros::NodeHandle  nh;
 
-// LED thermal drift correction
-#define NOM_LEDVOLT 2970000L
-#define OFFSET_LEDVOLT (1./3. * 32768 * 100) // LED cathode is at Vref
-#define LED_CORR_FACTOR (6.2)  // % change in light per 1% change in LED voltage
 
-enum { LED_on, collect_on, LED_off, collect_off } detector_phase = LED_on;
+static enum { LED_on, collect_on, LED_off, collect_off } detector_phase = LED_on;
 
 
 std_msgs::Int32 int32_msg;
 ros::Publisher photoval_pub("photoval", &int32_msg);
+ros::Publisher photoval_raw_pub("photoval_raw", &int32_msg);
+ros::Publisher ledvoltval_pub("ledvoltval", &int32_msg);
+ros::Publisher thermistor_pub("thermistor", &int32_msg);
 
 void stir_speed_cb( const std_msgs::UInt16& cmd_msg){
     // Set stir motor pwm level
@@ -59,6 +59,28 @@ void pump_steps_cb( const std_msgs::UInt16& cmd_msg){
 
 ros::Subscriber<std_msgs::UInt16> pump_steps_sub("pump_steps", pump_steps_cb);
 
+// LED thermal drift correction
+#define NOM_LEDVOLT 2970000L
+#define OFFSET_LEDVOLT (1./3. * 32768 * 100) // LED cathode is at Vref
+#define LED_CORR_FACTOR (6.2)  // % change in light per 1% change in LED voltage
+int32 nom_ledvolt = NOM_LEDVOLT;
+float led_corr_factor = LED_CORR_FACTOR;
+
+void nom_ledvolt_cb( const std_msgs::Int32& msg){
+    // Set nominal led voltage for thermal drift correction
+    nom_ledvolt = msg.data;
+}
+
+ros::Subscriber<std_msgs::Int32> nom_ledvolt_sub("nom_ledvolt", nom_ledvolt_cb);
+
+void led_corr_factor_cb( const std_msgs::Float32& msg){
+    // Set nominal correction coeff for thermal drift correction
+    led_corr_factor = msg.data;
+}
+
+ros::Subscriber<std_msgs::Float32> led_corr_factor_sub("led_corr_factor", led_corr_factor_cb);
+
+
 
 int main()
 {
@@ -83,9 +105,14 @@ int main()
     nh.initNode();
     HelloWorld::setup();
     nh.advertise(photoval_pub);
+    nh.advertise(photoval_raw_pub);
+    nh.advertise(ledvoltval_pub);
+    nh.advertise(thermistor_pub);
     nh.subscribe(stir_speed_sub);
     nh.subscribe(pump_speed_sub);
     nh.subscribe(pump_steps_sub);
+    nh.subscribe(nom_ledvolt_sub);
+    nh.subscribe(led_corr_factor_sub);
 
 
     for(;;)
@@ -118,12 +145,18 @@ int main()
             // take (foreground - background)
             uint32 photoval = photo_fg - photo_bg;
             int32_msg.data = photoval;
-            photoval_pub.publish(int32_msg);
+            photoval_raw_pub.publish(int32_msg);
             uint32 ledvoltval = led_volt_fg - led_volt_bg;
+            int32_msg.data = ledvoltval;
+            ledvoltval_pub.publish(int32_msg);
             // apply LED thermal drift correction
-            float delta_ledvolt = (int32)(ledvoltval - NOM_LEDVOLT)/(NOM_LEDVOLT - OFFSET_LEDVOLT);
-            uint32 adjusted_photoval = photoval / (1.0 + delta_ledvolt*LED_CORR_FACTOR);
-            //TODO: publish more
+            float delta_ledvolt = (int32)(ledvoltval - nom_ledvolt)/(nom_ledvolt - OFFSET_LEDVOLT);
+            uint32 adjusted_photoval = photoval / (1.0 + delta_ledvolt*led_corr_factor);
+            int32_msg.data = adjusted_photoval;
+            photoval_pub.publish(int32_msg);
+            int32_msg.data = adc_result[adc_chan_thermistor];
+            thermistor_pub.publish(int32_msg);
+
         }
         
         if((int16)(adc_pump_state.count-pump_steps_target)>=0) {

@@ -1655,6 +1655,84 @@
 <PropertyDeltas />
 </CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
 </CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+<CyGuid_ebc4f06d-207f-49c2-a540-72acf4adabc0 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFolder" version="2">
+<CyGuid_2f73275c-45bf-46ba-b3b1-00a2fe0c8dd8 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtBaseContainer" version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="Thermistor" persistent="">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<CyGuid_0820c2e7-528d-4137-9a08-97257b946089 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItemList" version="2">
+<dependencies>
+<CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFileGenerated" version="1">
+<CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFile" version="3" xml_contents_version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="Thermistor.c" persistent=".\Generated_Source\PSoC4\Thermistor.c">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<build_action v="ARM_C_FILE" />
+<PropertyDeltas />
+</CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
+</CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+<CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFileGenerated" version="1">
+<CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFile" version="3" xml_contents_version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="Thermistor.h" persistent=".\Generated_Source\PSoC4\Thermistor.h">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<build_action v="NONE" />
+<PropertyDeltas />
+</CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
+</CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+<CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFileGenerated" version="1">
+<CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFile" version="3" xml_contents_version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="Thermistor_aliases.h" persistent=".\Generated_Source\PSoC4\Thermistor_aliases.h">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<build_action v="NONE" />
+<PropertyDeltas />
+</CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
+</CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+</dependencies>
+</CyGuid_0820c2e7-528d-4137-9a08-97257b946089>
+</CyGuid_2f73275c-45bf-46ba-b3b1-00a2fe0c8dd8>
+<filters />
+</CyGuid_ebc4f06d-207f-49c2-a540-72acf4adabc0>
+<CyGuid_ebc4f06d-207f-49c2-a540-72acf4adabc0 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFolder" version="2">
+<CyGuid_2f73275c-45bf-46ba-b3b1-00a2fe0c8dd8 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtBaseContainer" version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="HeaterDrive" persistent="">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<CyGuid_0820c2e7-528d-4137-9a08-97257b946089 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItemList" version="2">
+<dependencies>
+<CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFileGenerated" version="1">
+<CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFile" version="3" xml_contents_version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="HeaterDrive.c" persistent=".\Generated_Source\PSoC4\HeaterDrive.c">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<build_action v="ARM_C_FILE" />
+<PropertyDeltas />
+</CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
+</CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+<CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFileGenerated" version="1">
+<CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFile" version="3" xml_contents_version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="HeaterDrive.h" persistent=".\Generated_Source\PSoC4\HeaterDrive.h">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<build_action v="NONE" />
+<PropertyDeltas />
+</CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
+</CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+<CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFileGenerated" version="1">
+<CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtFile" version="3" xml_contents_version="1">
+<CyGuid_31768f72-0253-412b-af77-e7dba74d1330 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtItem" version="2" name="HeaterDrive_aliases.h" persistent=".\Generated_Source\PSoC4\HeaterDrive_aliases.h">
+<Hidden v="False" />
+</CyGuid_31768f72-0253-412b-af77-e7dba74d1330>
+<build_action v="NONE" />
+<PropertyDeltas />
+</CyGuid_8b8ab257-35d3-4473-b57b-36315200b38b>
+</CyGuid_405e30c3-81d4-4133-98d6-c3ecf21fec0d>
+</dependencies>
+</CyGuid_0820c2e7-528d-4137-9a08-97257b946089>
+</CyGuid_2f73275c-45bf-46ba-b3b1-00a2fe0c8dd8>
+<filters />
+</CyGuid_ebc4f06d-207f-49c2-a540-72acf4adabc0>
 </dependencies>
 </CyGuid_0820c2e7-528d-4137-9a08-97257b946089>
 </CyGuid_2f73275c-45bf-46ba-b3b1-00a2fe0c8dd8>
@@ -1953,14 +2031,23 @@
 <name_val_pair name="fdb8e1ae-f83a-46cf-9446-1d703716f38a@Release@CortexM0@Linker@Command Line@Command Line" v="" />
 </name>
 </platform>
+<platform>
+<name v="e9305a93-d091-4da5-bdc7-2813049dcdbf">
+<name_val_pair name="e9305a93-d091-4da5-bdc7-2813049dcdbf@Debug@CortexM0@General@Output Directory" v="${ProjectDir}\${ProcessorType}\${Platform}\${Config}" />
+<name_val_pair name="e9305a93-d091-4da5-bdc7-2813049dcdbf@Debug@CortexM0@Assembly@Command Line@Command Line" v="-s+ -M&lt;&gt; -w+ -r -DDEBUG --fpu None" />
+<name_val_pair name="e9305a93-d091-4da5-bdc7-2813049dcdbf@Debug@CortexM0@C/C++@Command Line@Command Line" v="-D DEBUG --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa --no_clustering --no_scheduling --debug --endian=little -e --fpu=None -On --no_wrap_diagnostics" />
+<name_val_pair name="e9305a93-d091-4da5-bdc7-2813049dcdbf@Debug@CortexM0@Library Generation@Command Line@Command Line" v="" />
+<name_val_pair name="e9305a93-d091-4da5-bdc7-2813049dcdbf@Debug@CortexM0@Linker@Command Line@Command Line" v="--semihosting --entry __iar_program_start --vfe" />
+</name>
+</platform>
 </platforms>
 <project_current_platform v="c9323d49-d323-40b8-9b59-cc008d68a989" />
 <project_current_processor v="CortexM0" />
 <component_generation v="PSoC Creator  3.1" />
 <last_selected_tab v="Cypress" />
 <component_dependent_projects_generation v="(69eeda1b-ded5-4da3-a74d-3a98f2d5d4ab , 2.1PR) | (b1a3f413-e018-46a5-a51c-20818b2f118e , 3.0) | (cd381074-8dad-4f43-bb88-7719b3e16126 , 2.1) | (29420278-6fcc-46a7-a651-999ec5c253d2 , 2.1)" />
-<WriteAppVersionLastSavedWith v="3.1.0.1570" />
-<WriteAppMarketingVersionLastSavedWith v=" 3.1" />
+<WriteAppVersionLastSavedWith v="3.1.0.1722" />
+<WriteAppMarketingVersionLastSavedWith v=" 3.1 SP1" />
 <project_id v="8d7bed21-dd83-44cf-980d-ec2e90c566ee" />
 </CyGuid_49cfd574-032a-4a64-b7be-d4eeeaf25e43>
 </CyGuid_60697ce6-dce2-4816-8680-4de0635742eb>
