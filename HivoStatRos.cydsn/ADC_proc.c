@@ -52,6 +52,8 @@ CY_ISR(ADC_ISR_LOC)
                 adc_pump_state.count |= 1;
             }
         }
+        //thermistor value
+        adc_result[adc_chan_thermistor] = ADC_GetResult16(adc_chan_thermistor);
     }    
 
     /* Clear handled interrupt */
