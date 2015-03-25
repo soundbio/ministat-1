@@ -29,6 +29,8 @@ static enum { LED_on, collect_on, LED_off, collect_off } detector_phase = LED_on
 
 std_msgs::Int32 int32_msg;
 ros::Publisher photoval_pub("photoval", &int32_msg);
+ros::Publisher darkval_pub("darkval", &int32_msg);
+ros::Publisher lightval_pub("lightval", &int32_msg);
 ros::Publisher photoval_raw_pub("photoval_raw", &int32_msg);
 ros::Publisher ledvoltval_pub("ledvoltval", &int32_msg);
 ros::Publisher thermistor_pub("thermistor", &int32_msg);
@@ -105,6 +107,8 @@ int main()
     nh.initNode();
     HelloWorld::setup();
     nh.advertise(photoval_pub);
+    nh.advertise(darkval_pub);
+    nh.advertise(lightval_pub);
     nh.advertise(photoval_raw_pub);
     nh.advertise(ledvoltval_pub);
     nh.advertise(thermistor_pub);
@@ -142,6 +146,10 @@ int main()
         // periodically report results 
         if ((int32)(millis()-next_report_time) >= 0) {
             next_report_time += report_interval_ms;
+            int32_msg.data = photo_bg;
+            darkval_pub.publish(int32_msg);
+            int32_msg.data = photo_fg;
+            lightval_pub.publish(int32_msg);
             // take (foreground - background)
             uint32 photoval = photo_fg - photo_bg;
             int32_msg.data = photoval;
