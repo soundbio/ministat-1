@@ -35,23 +35,25 @@ CY_ISR(ADC_ISR_LOC)
                 accum[chan] = 0;
             }
             /* Read conversion result */
-            accum[chan] += ADC_GetResult16(chan);
+            accum[chan] += (uint16)ADC_GetResult16(chan);
         } 
         // count pump sensor transitions
-        adc_result[adc_chan_pump_sensor] = ADC_GetResult16(adc_chan_pump_sensor);
+        adc_result[adc_chan_pump_sensor] = (uint16)ADC_GetResult16(adc_chan_pump_sensor);
         if (adc_pump_state.count&0x01)
         { // sensor state high
-            if(ADC_GetResult16(adc_chan_pump_sensor)<(adc_pump_state.thresh-adc_pump_state.hyst))
+            if((uint16)ADC_GetResult16(adc_chan_pump_sensor)<(adc_pump_state.thresh-adc_pump_state.hyst))
             {
                 adc_pump_state.count++;
             }
         } else
         { // sensor state low
-            if(ADC_GetResult16(adc_chan_pump_sensor)>adc_pump_state.thresh)
+            if((uint16)ADC_GetResult16(adc_chan_pump_sensor)>adc_pump_state.thresh)
             {
                 adc_pump_state.count |= 1;
             }
         }
+        //thermistor value
+        adc_result[adc_chan_thermistor] = (uint16)ADC_GetResult16(adc_chan_thermistor);
     }    
 
     /* Clear handled interrupt */
