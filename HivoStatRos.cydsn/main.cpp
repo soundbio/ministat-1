@@ -61,6 +61,20 @@ void pump_steps_cb( const std_msgs::UInt16& cmd_msg){
 
 ros::Subscriber<std_msgs::UInt16> pump_steps_sub("pump_steps", pump_steps_cb);
 
+
+// heater control
+uint16 heater_pwm = 0;
+
+void heater_pct_cb( const std_msgs::UInt16& cmd_msg){
+    // Set heater pwm level by percent
+    if ((heater_pwm = cmd_msg.data*10)>1000) {
+        heater_pwm = 1000;
+    }
+    HEATER_PWM_WriteCompare(heater_pwm);
+}
+
+ros::Subscriber<std_msgs::UInt16> heater_pct_sub("heater_pct", heater_pct_cb);
+
 // LED thermal drift correction
 #define NOM_LEDVOLT 2970000L
 #define OFFSET_LEDVOLT (1./3. * 32768 * 100) // LED cathode is at Vref
@@ -93,6 +107,7 @@ int main()
     adc_setup(); // A to D converter
     STIR_PWM_Start();
     PUMP_PWM_Start();
+    HEATER_PWM_Start();
     CyGlobalIntEnable; // Enable interrupts
     
     uint32 report_interval_ms = 100;
@@ -115,6 +130,7 @@ int main()
     nh.subscribe(stir_speed_sub);
     nh.subscribe(pump_speed_sub);
     nh.subscribe(pump_steps_sub);
+    nh.subscribe(heater_pct_sub);
     nh.subscribe(nom_ledvolt_sub);
     nh.subscribe(led_corr_factor_sub);
 
