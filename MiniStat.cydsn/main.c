@@ -6,9 +6,11 @@
  *
  */
 #include <project.h>
+#include <math.h>
 #include "SysTimer.h"
 #include "isnprintf.h"
 #include "ADC_proc.h"
+#include "Thermistor_linearize.h"
 
 // LED thermal drift correction
 #define NOM_LEDVOLT 2970000L
@@ -92,9 +94,21 @@ int main()
               *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
             byteptr = (uint8*)(&adc_pump_state.count);
-            count = isnprintf(buf, 30, "P%c%c\r\n", 
+            count = isnprintf(buf, 30, "P%c%c", 
               *byteptr, *(byteptr+1)); 
             Host_UART_SpiUartPutArray((uint8*)buf, count);
+            byteptr = (uint8*)(&(adc_result[adc_chan_thermistor]));
+            count = isnprintf(buf, 30, "T%c%c%c%c", 
+              *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
+            Host_UART_SpiUartPutArray((uint8*)buf, count);
+            float volt_ratio = adc_result[adc_chan_thermistor]/pow(2.0, 15);
+            const float thermistor_factor = 0.989; // ratio of divider top resistor to thermistor 25C value 
+            float thermistor_temp = ThermistorTempC(thermistor_factor*volt_ratio/(1.0-volt_ratio), 25.0, 3380.);            byteptr = (uint8*)(&(adc_result[adc_chan_thermistor]));
+            byteptr = (uint8*)(&(thermistor_temp));
+            count = isnprintf(buf, 30, "C%c%c%c%c\r\n", 
+              *byteptr, *(byteptr+1), *(byteptr+2), *(byteptr+3)); 
+            Host_UART_SpiUartPutArray((uint8*)buf, count);
+
         }
         P1_6_Write(RX8_reports_remaining>0); // Blue LED on in RX8 mode
         
