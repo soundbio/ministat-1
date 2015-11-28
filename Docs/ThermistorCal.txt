@@ -1,0 +1,71 @@
+Thermistor Murata NXFT15XH103FA2B050
+
+Temp stabilized after ~2hrs  60% PWM
+
+Vth = 0.293V  ADC data ~9330  Rth = 3.981K
+
+per table B-constant(25C-50C)=3380K 25C=10K, 50C=4.161K, 55C=3.535K
+
+defn of B constant: R = R0*exp(B*(1/T-1/T0))
+
+45C 4.9K 0.337V  ADC ~10950
+
+
+Add 0.1 uf bypass across thermistor to reduce noise.
+Induced noise spikes seem to occur when stir motor is running above a certain speed. 75-ohm+0.1uf filter on stir motor seems to suppress noise at usable stir speeds.
+
+Calibration run using Heraeus 32207704 platinum RTD as reference.
+Reference cal ice bath 0C = 1.0007K, boiling water 100C = 1.3875K (Fluke 189 multimeter)
+Mfr tempco 3850 ppm/K calculated tempco 3865 ppm/K approx deviation using R0=1.0007 & mfr tempco: 0.5C at 100C
+
+Calibration run
+
+Time/Thermistor ADC/RTD Kohms
+
+11:04 16835 1.0922
+11:05 heater @ 100%
+11:06 16816 1.0926
+11:09 heater off
+11:10 15846 1.1049
+11:11 15852 1.1049
+heater on
+11:14 heater off
+11:15 15055 1.1151
+heater on
+11:22 heater 30%
+11:23 13545 1.1349
+11:24 13530 1.1352
+heater on 40%
+11:26 heater on 50%
+11:33 heater on 30%
+11:34 12996 1.1425
+11:35 13004 1.1424
+heater on 50%
+11:37 heater on 30%
+11:38 12928 1.1434
+11:39 12925 1.1435
+heater on 50%
+11:41 heater on 30%
+11:42 12833 1.1448
+11:43 12840 1.1447
+heater on 100%
+11:49 heater on 35%
+11:50 11824 1.1592
+11:51 11836 1.1591
+heater on 100%
+11:56 foam jacket on resistor
+12:00 - 12:05 power irregular, lost 75-ohm stir resistor, added bubble jacket on tube
+12:10 heater on 50%
+12:11 9758 1.1918
+12:12 9750 1.1919
+heater on 100%
+12:14 heater 50%
+12:15 9577 1.1949
+12:16 9578 1.1949
+heater off
+1:22 15814 1.1053
+1:24 15850 1.1049
+1:25 15880 1.1044
+
+
+

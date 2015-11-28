@@ -27,3 +27,14 @@
 *.i*86
 *.x86_64
 *.hex
+
+# PSoC Creator specific
+*.cycdx
+*.cyfit
+*.rpt
+**/CortexM3/
+**/CortexM0/
+**/DP8051/
+**/Export/
+**/Generated_Source/
+**/codegentemp/
