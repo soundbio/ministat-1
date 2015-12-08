@@ -8,7 +8,6 @@ pump_counts = 0
 target_counts = 10
 
 def sensor_callback(channel):
-	global sensor_phase	
 	global pump_counts
 	sensor_high = GPIO.input(pump_sense_pin)
 	# use pullup/pulldown control to add hysteresis
