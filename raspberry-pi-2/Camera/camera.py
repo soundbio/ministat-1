@@ -14,4 +14,7 @@ class PumpCamera(PiCamera):
         PiCamera.capture(self, image)
 
     def send(self):
-        sp.Popen(['scp', self.__image, self.__path + '/' + self.__image]).wait()
+        try:
+            sp.Popen(['scp', self.__image, self.__path + '/' + self.__image]).wait()
+        except Exception, ex:
+            print str(ex)

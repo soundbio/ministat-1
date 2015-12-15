@@ -1,4 +1,4 @@
-﻿import RPIO.GPIO as GPIO
+﻿import RPi.GPIO as GPIO
 import threading
 import sys
 import time
@@ -13,11 +13,12 @@ class Pump(object):
     __steps = 0
 
     def __init__(self, pumpio, senseio = None, callback = None):
-        self.__listener.lastcall = 0
+        self.__firstcall = 0
+        self.__lastcall = 0
         self.__pumpio = pumpio
         self.__senseio = senseio
         self.__callback = callback
-        GPIO.setup(self.__pumpio, GPIO.OUT, GPIO.pull_up_down=GPIO.PUD_OFF)
+        GPIO.setup(self.__pumpio, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
 
     def start(self):
         GPIO.output(self.__pumpio, GPIO.HIGH)
@@ -39,24 +40,24 @@ class Pump(object):
         if (self.__senseio == None) and (steps <= 0):
             return # throw?
         
-        GPIO.setup(self.__senseio, GPIO.IN, GPIO.pull_up_down=GPIO.PUD_OFF)
+        GPIO.setup(self.__senseio, GPIO.IN, pull_up_down=GPIO.PUD_OFF)
         GPIO.remove_event_detect(self.__senseio)
         GPIO.add_event_detect(self.__senseio, GPIO.RISING, callback=self._listener)
         
         # set up for steps
         self.__steps = steps
-        _listener.lastcall = int(round(time.time() * 1000))
-        _listener.firstcall = _listener.lastcall
+        self.__lastcall = int(round(time.time() * 1000))
+        self.__firstcall = self.__lastcall
 
         self.start()
 
     def _listener(self):
-        _listener.lastcall = int(round(time.time() * 1000))
-        if _listener.lastcall < _listener.firstcall + debounce:
+        self.__lastcall = int(round(time.time() * 1000))
+        if self.__lastcall < self.__firstcall + debounce:
             return  # still bouncing
 
         # reset debounce
-        _listener.firstcall = _listener.lastcall
+        self.__firstcall = self.__lastcall
 
         # process steps and stop if done
         self.__step = self.__step - 1
@@ -64,6 +65,6 @@ class Pump(object):
             self.stop()
 
         if not self.__callback is None:
-            self.__callbacki_(_listener.lastcall)
+            self.__callback(self.__lastcall)
 
 
