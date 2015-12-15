@@ -1,13 +1,17 @@
-from ftplib import FTP
-import picamera as picam
+from picamera import PiCamera
+import subprocess as sp
 
-image = "image.jpg"
+class PumpCamera(PiCamera):
+    __image = None
+    __path = None
 
-camera = picam.PiCamera()
-camera.capture(image)
+    def __init__(self, path):
+        self.__path = path
+        PiCamera.__init__(self)
 
-ftp = FTP('ftp.ptse.org','ptschnack','Copperdoor54!')
-ftp.cwd('/public_ftp')
-ftp.storbinary("STOR " + image, open(image, "rb"), 1024)
-ftp.close()
+    def capture(self, image):
+        self.__image = image
+        PiCamera.capture(self, image)
 
+    def send(self):
+        sp.Popen(['scp', self.__image, self.__path + '/' + self.__image]).wait()
