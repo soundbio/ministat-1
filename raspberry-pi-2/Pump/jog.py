@@ -13,7 +13,7 @@ from pump import Pump
 
 # done() is callback for pump end-of-steps 
 def done(timestamp):
-    print("done steps " + timestamp, end="\n", flush=True)
+    print(".",end="")
 
 try:
     # main loop

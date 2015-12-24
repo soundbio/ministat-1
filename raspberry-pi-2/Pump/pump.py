@@ -7,10 +7,13 @@ class Pump(object):
     """ Pump class operates a peristaltic pump connected to gpio
         It assumes gpio is compatible with Rpi mode setting.
     """
+    __firstcall = 0 
+    __lastcall = 0
     __pumpio = None
     __senseio = None
     __run_timer = None
     __steps = 0
+    __debounce = 20 # ms
 
     def __init__(self, pumpio, senseio = None, callback = None):
         self.__firstcall = 0
@@ -19,6 +22,10 @@ class Pump(object):
         self.__senseio = senseio
         self.__callback = callback
         GPIO.setup(self.__pumpio, GPIO.OUT, pull_up_down=GPIO.PUD_OFF)
+        if (not senseio == None) and (not callback == None):
+            GPIO.setup(self.__senseio, GPIO.IN, pull_up_down=GPIO.PUD_OFF)
+            GPIO.remove_event_detect(self.__senseio)
+            GPIO.add_event_detect(self.__senseio, GPIO.RISING, self.__callback)
 
     def start(self):
         GPIO.output(self.__pumpio, GPIO.HIGH)
@@ -51,16 +58,9 @@ class Pump(object):
 
         self.start()
 
-    def _listener(self):
-        self.__lastcall = int(round(time.time() * 1000))
-        if self.__lastcall < self.__firstcall + debounce:
-            return  # still bouncing
-
-        # reset debounce
-        self.__firstcall = self.__lastcall
-
+    def _listener(self, channel):
         # process steps and stop if done
-        self.__step = self.__step - 1
+        self.__steps = self.__steps - 1
         if self.__steps == 0:
             self.stop()
 
