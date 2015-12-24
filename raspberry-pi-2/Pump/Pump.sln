@@ -9,6 +9,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Utils", "..\Utils\Utils.pyp
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PumpTest", "..\PumpTest\PumpTest.pyproj", "{E6F52734-F3EB-46F6-B188-7E69AE9BC9DD}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Camera", "..\Camera\Camera.pyproj", "{D1C84164-EB7F-494A-8789-415B669214AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,8 @@ Global
 		{A9E4B3BC-6305-4B26-B7F3-AB7E1903F590}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6F52734-F3EB-46F6-B188-7E69AE9BC9DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6F52734-F3EB-46F6-B188-7E69AE9BC9DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1C84164-EB7F-494A-8789-415B669214AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1C84164-EB7F-494A-8789-415B669214AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
