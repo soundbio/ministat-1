@@ -18,6 +18,7 @@ class Uart : public HardwareSerial
     void begin(unsigned long baud); // TBD: set baud rate
     int read(void);
     size_t write(uint8_t data);
+    size_t write(uint8_t* data, int length);
   private:
     uint8_t read_buf[64];
     uint8_t *read_ptr, *read_tail;

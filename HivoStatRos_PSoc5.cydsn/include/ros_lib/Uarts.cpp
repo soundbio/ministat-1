@@ -47,5 +47,24 @@ size_t Uart::write(uint8_t data) {
   return 1;
 };
 
+size_t Uart::write(uint8_t* data, int length) {
+  int buf_size = USBUART_EP[USBUART_cdc_data_in_ep].bufferSize;
+  while(1) {
+    while(USBUART_CDCIsReady() == 0u);    /* Wait till component is ready to send more data */
+    if (length >= buf_size) {
+      USBUART_PutData(data, buf_size);
+      length -= buf_size;
+      data += buf_size;
+    } else {
+      USBUART_PutData(data, length);
+      break;
+    }
+  }
+  return 1;
+};
+
+
+
+
 Uart Uart0;
 

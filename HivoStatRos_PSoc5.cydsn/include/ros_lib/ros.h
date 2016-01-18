@@ -37,7 +37,7 @@
 
 #include "ros/node_handle.h"
 
-#include "Psoc4Hardware.h"
+#include "Psoc5Hardware.h"
 
 #ifndef ROSSERIAL_PSOC4_MAX_SUBSCRIBERS
 #define ROSSERIAL_PSOC4_MAX_SUBSCRIBERS 10
